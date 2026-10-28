@@ -1,0 +1,845 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>David's Grass Cutting · Quick Survey</title>
+<meta name="description" content="A few quick questions from David's Grass Cutting. Takes about 3 minutes.">
+<meta name="theme-color" content="#1F5A33">
+<meta property="og:title" content="A few quick questions from David">
+<meta property="og:description" content="Takes about 3 minutes. Thanks for being a customer!">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+<style>
+:root {
+  --bg: #F1F5EC;
+  --surface: #FCFDF9;
+  --ink: #13261A;
+  --ink-soft: #3A5142;
+  --line: #7A917D;
+  --green: #1F5A33;
+  --on-green: #F6FBF3;
+  --sel-bg: #E1EFDA;
+  --focus: #13261A;
+  --warn: #8A2E12;
+  --amber: #F2B33D;
+  --grass-tall: #2E6B36;
+  --grass-a: #5DAA58;
+  --grass-b: #4C984B;
+  --shadow: 0 1px 0 rgb(31 90 51 / .06), 0 8px 24px rgb(31 90 51 / .08);
+  --radius: 16px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0E1711;
+    --surface: #15221A;
+    --ink: #EAF2E6;
+    --ink-soft: #B9CBBA;
+    --line: #6F8973;
+    --green: #93D493;
+    --on-green: #0B1A0F;
+    --sel-bg: #1E3A26;
+    --focus: #EAF2E6;
+    --warn: #FFB59C;
+    --grass-tall: #1F4A26;
+    --grass-a: #3F8A44;
+    --grass-b: #347A3A;
+    --shadow: 0 1px 0 rgb(0 0 0 / .3), 0 8px 24px rgb(0 0 0 / .3);
+    color-scheme: dark;
+  }
+}
+
+* { box-sizing: border-box; }
+html { font-size: 100%; -webkit-text-size-adjust: 100%; scroll-padding-bottom: 120px; }
+html.big { font-size: 125%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 1.25rem;
+  line-height: 1.5;
+}
+button, input, textarea { font: inherit; color: inherit; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+
+.app {
+  min-height: 100dvh;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 18px 0 14px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: "Bricolage Grotesque", "Atkinson Hyperlegible", sans-serif;
+  font-weight: 800;
+  font-size: 1.125rem;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+.brand-mark {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--green);
+  color: var(--on-green);
+  font-size: 1.4rem;
+}
+.textsize {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 48px;
+  padding: 0 14px;
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.textsize i { font-size: 1.35rem; }
+.textsize[aria-pressed="true"] { background: var(--sel-bg); border-color: var(--green); }
+
+/* Lawn progress: the mower mows the strip as you go */
+.progress { --p: 0; margin: 4px 0 6px; }
+.lawn {
+  position: relative;
+  height: 22px;
+  border-radius: 999px;
+  overflow: hidden;
+  background:
+    repeating-linear-gradient(115deg, transparent 0 5px, rgb(0 0 0 / .14) 5px 7px),
+    var(--grass-tall);
+}
+.mowed, .mowed-inner {
+  position: absolute;
+  inset: 0;
+  transition: transform .6s cubic-bezier(.16, 1, .3, 1);
+}
+.mowed { overflow: hidden; transform: translateX(calc((var(--p) - 1) * 100%)); }
+.mowed-inner {
+  transform: translateX(calc((1 - var(--p)) * 100%));
+  background: repeating-linear-gradient(90deg, var(--grass-a) 0 18px, var(--grass-b) 18px 36px);
+}
+.rail {
+  position: relative;
+  height: 0;
+  margin: 0 18px;
+}
+.mower-track {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -36px;
+  transition: transform .6s cubic-bezier(.16, 1, .3, 1);
+  transform: translateX(calc(var(--p) * 100%));
+  pointer-events: none;
+}
+.mower {
+  position: absolute;
+  left: 0;
+  top: 0;
+  translate: -50% 0;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--amber);
+  color: #1D2A12;
+  font-size: 1.6rem;
+  border: 3px solid var(--bg);
+  box-shadow: 0 4px 10px rgb(0 0 0 / .18);
+}
+.progress.moving .mower { animation: chug .3s ease-in-out 2; }
+@keyframes chug { 50% { transform: translateY(-3px) rotate(-4deg); } }
+.step-count {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 12px;
+  margin: 30px 0 0;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+.step-count .skip-ok { font-weight: 400; }
+
+/* Question stage */
+main { flex: 1; padding: 6px 0 28px; }
+.screen { animation: enter .32s cubic-bezier(.16, 1, .3, 1); }
+.screen.back { animation-name: enter-back; }
+@keyframes enter { from { opacity: 0; transform: translateX(24px); } }
+@keyframes enter-back { from { opacity: 0; transform: translateX(-24px); } }
+
+.q {
+  margin: 0 0 8px;
+  font-family: "Bricolage Grotesque", "Atkinson Hyperlegible", sans-serif;
+  font-weight: 800;
+  font-size: clamp(1.75rem, 1.35rem + 1.6vw, 2.25rem);
+  line-height: 1.18;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+.q:focus { outline: none; }
+.hint { margin: 0 0 22px; color: var(--ink-soft); font-size: 1.125rem; }
+.opt-tag { font-family: "Atkinson Hyperlegible", sans-serif; font-weight: 400; font-size: .55em; color: var(--ink-soft); letter-spacing: 0; white-space: nowrap; }
+
+fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
+.choices { display: grid; gap: 12px; }
+.choice {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 68px;
+  padding: 14px 18px;
+  border: 2px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  font-size: 1.25rem;
+  line-height: 1.3;
+  cursor: pointer;
+  transition: border-color .15s, background-color .15s, transform .12s;
+  -webkit-tap-highlight-color: transparent;
+}
+.choice:active { transform: scale(.985); }
+.choice input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.tick {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 2px solid var(--line);
+  background: var(--bg);
+  color: transparent;
+  font-size: 1.1rem;
+  transition: background-color .15s, border-color .15s;
+}
+.choice.radio .tick { border-radius: 50%; }
+.choice.check .tick { border-radius: 9px; }
+.choice:has(input:checked) {
+  border: 3px solid var(--green);
+  padding: 13px 17px;
+  background: var(--sel-bg);
+}
+.choice:has(input:checked) .tick { background: var(--green); border-color: var(--green); color: var(--on-green); }
+.choice:has(input:checked) .tick i { animation: pop .25s cubic-bezier(.3, 1.6, .5, 1); }
+@keyframes pop { from { transform: scale(.3); } }
+.choice:has(input:focus-visible) { outline: 3px solid var(--focus); outline-offset: 3px; }
+
+.field-label { display: block; margin: 0 0 8px; font-weight: 700; font-size: 1.125rem; }
+.note-wrap { margin: 24px 0 0; }
+.note-wrap textarea { min-height: 104px; }
+.field-label .opt { font-weight: 400; color: var(--ink-soft); }
+
+textarea, .text-input {
+  display: block;
+  width: 100%;
+  border: 2px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: 16px 18px;
+  font-size: 1.25rem;
+  line-height: 1.45;
+  box-shadow: var(--shadow);
+}
+textarea { min-height: 176px; resize: vertical; }
+textarea:focus, .text-input:focus { outline: 3px solid var(--focus); outline-offset: 2px; border-color: var(--green); }
+::placeholder { color: var(--ink-soft); opacity: .85; }
+
+.words { display: grid; gap: 14px; }
+.word-row { display: flex; align-items: center; gap: 14px; }
+.word-num {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--green);
+  color: var(--on-green);
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-weight: 800;
+  font-size: 1.25rem;
+}
+.word-row .text-input { flex: 1; min-height: 60px; }
+
+.error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 16px 0 0;
+  color: var(--warn);
+  font-weight: 700;
+  font-size: 1.125rem;
+}
+.error[hidden] { display: none; }
+.error i { font-size: 1.5rem; }
+
+/* Bottom bar */
+.bar {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  gap: 12px;
+  padding: 14px 0 calc(14px + env(safe-area-inset-bottom));
+  background: linear-gradient(to bottom, transparent, var(--bg) 14px);
+}
+.bar[hidden] { display: none; }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 60px;
+  padding: 0 22px;
+  border-radius: var(--radius);
+  border: 2px solid transparent;
+  font-size: 1.25rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform .12s, background-color .15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn:active { transform: translateY(1px) scale(.99); }
+.btn i { font-size: 1.4rem; }
+.btn-primary { flex: 1; background: var(--green); color: var(--on-green); }
+.btn-ghost { background: var(--surface); border-color: var(--line); color: var(--ink); }
+.btn[disabled] { opacity: .7; cursor: progress; }
+.btn[hidden] { display: none; }
+
+/* Intro */
+.hero-lawn {
+  position: relative;
+  height: 168px;
+  margin: 8px 0 28px;
+  border-radius: 24px;
+  overflow: hidden;
+  background: repeating-linear-gradient(90deg, var(--grass-a) 0 34px, var(--grass-b) 34px 68px);
+}
+.hero-lawn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(115deg, transparent 0 6px, rgb(0 0 0 / .14) 6px 8px),
+    var(--grass-tall);
+  clip-path: inset(0 0 0 72%);
+  animation: mow-hero 2.4s cubic-bezier(.45, 0, .25, 1) .3s both;
+}
+.hero-lawn .big-mower {
+  position: absolute;
+  top: 50%;
+  left: 72%;
+  translate: -50% -50%;
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: var(--amber);
+  color: #1D2A12;
+  font-size: 3rem;
+  border: 4px solid rgb(255 255 255 / .55);
+  box-shadow: 0 10px 24px rgb(0 0 0 / .22);
+  animation: drive-hero 2.4s cubic-bezier(.45, 0, .25, 1) .3s both;
+}
+.hero-lawn.done { height: 120px; margin: 32px 0 0; }
+.hero-lawn.done::before { clip-path: inset(0 0 0 100%); animation: mow-done 1.6s cubic-bezier(.45, 0, .25, 1) .4s both; }
+.hero-lawn.done .big-mower { left: 100%; width: 68px; height: 68px; font-size: 2.4rem; animation: drive-done 1.6s cubic-bezier(.45, 0, .25, 1) .4s both; }
+@keyframes mow-done { from { clip-path: inset(0 0 0 72%); } }
+@keyframes drive-done { from { left: 72%; } to { left: 112%; } }
+@keyframes mow-hero { from { clip-path: inset(0 0 0 0); } }
+@keyframes drive-hero { from { left: -6%; } }
+.hero-lawn .sun {
+  position: absolute;
+  right: 18px;
+  top: 14px;
+  color: #FFE7A6;
+  font-size: 2.4rem;
+  opacity: .9;
+}
+.intro h1 {
+  margin: 0 0 12px;
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-weight: 800;
+  font-size: clamp(2.25rem, 1.8rem + 2vw, 3rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+}
+.intro p { margin: 0 0 22px; font-size: 1.3125rem; max-width: 34ch; }
+.meta { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 8px; padding: 0; list-style: none; }
+.meta li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: var(--sel-bg);
+  font-weight: 700;
+  font-size: 1.0625rem;
+}
+.meta i { font-size: 1.3rem; }
+
+/* Thanks */
+.thanks { text-align: center; padding-top: 12px; }
+.thanks .badge {
+  display: grid;
+  place-items: center;
+  width: 120px;
+  height: 120px;
+  margin: 12px auto 24px;
+  border-radius: 50%;
+  background: var(--green);
+  color: var(--on-green);
+  font-size: 4rem;
+  animation: badge .6s cubic-bezier(.3, 1.5, .5, 1) both;
+}
+@keyframes badge { from { transform: scale(.2) rotate(-30deg); opacity: 0; } }
+.thanks h2 { margin: 0 0 12px; font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; font-size: clamp(2rem, 1.6rem + 2vw, 2.75rem); line-height: 1.1; letter-spacing: -0.02em; }
+.thanks p { margin: 0 auto 10px; max-width: 30ch; font-size: 1.3125rem; }
+.test-note { margin-top: 24px !important; padding: 12px 16px; border: 2px dashed var(--line); border-radius: 12px; font-size: 1rem !important; color: var(--ink-soft); }
+
+.clippings { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 2; }
+.clip {
+  position: absolute;
+  top: -20px;
+  width: 6px;
+  height: 18px;
+  border-radius: 3px;
+  background: var(--c);
+  left: var(--x);
+  animation: fall var(--d) cubic-bezier(.3, .2, .6, 1) var(--delay) forwards;
+}
+@keyframes fall { to { transform: translate(var(--drift), 110dvh) rotate(var(--r)); } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .clippings { display: none; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"><i class="ph-fill ph-leaf"></i></span>
+      <span>David's Grass Cutting</span>
+    </div>
+    <button class="textsize" id="textsize" type="button" aria-pressed="false">
+      <i class="ph-bold ph-text-aa" aria-hidden="true"></i><span id="textsizelabel">Click for bigger text</span>
+    </button>
+  </header>
+
+  <div class="progress" id="progress" hidden>
+    <div class="lawn" role="progressbar" id="progressbar" aria-label="Survey progress" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0">
+      <div class="mowed"><div class="mowed-inner"></div></div>
+    </div>
+    <div class="rail" aria-hidden="true">
+      <div class="mower-track"><span class="mower"><i class="ph-fill ph-tractor"></i></span></div>
+    </div>
+    <p class="step-count" id="stepcount" aria-live="polite"></p>
+  </div>
+
+  <main id="stage"></main>
+
+  <div class="bar" id="bar" hidden>
+    <button class="btn btn-ghost" id="back" type="button"><i class="ph-bold ph-arrow-left" aria-hidden="true"></i>Back</button>
+    <button class="btn btn-primary" id="next" type="button"><span id="nextlabel">Next</span><i class="ph-bold ph-arrow-right" id="nexticon" aria-hidden="true"></i></button>
+  </div>
+
+  <div aria-hidden="true" style="position:absolute;left:-9999px;top:auto">
+    <label>Leave this empty <input id="website" type="text" tabindex="-1" autocomplete="off"></label>
+  </div>
+</div>
+
+<script>
+// Paste the Google Apps Script web app URL here (see SETUP.md).
+const ENDPOINT = "PASTE_YOUR_APPS_SCRIPT_URL_HERE";
+
+const STORE_KEY = "dgc-survey-v1";
+
+const SCREENS = [
+  { id: "intro", type: "intro" },
+  { id: "persona", num: 1, type: "single",
+    q: "Which sounds most like you?",
+    options: ["Busy working family", "Retired and enjoying it", "Work long hours", "Physically can't anymore", "Just hate yard work", "Other"] },
+  { id: "lawn_matters", num: 2, type: "text",
+    q: "How much does having a nice-looking lawn matter to you, and why?",
+    hint: "A sentence or two is perfect." },
+  { id: "before", num: 3, type: "single",
+    q: "Before David, who was cutting your grass?",
+    options: ["Me", "Another company", "A neighbor or kid", "Honestly, nobody 😅"] },
+  { id: "switch_reason", num: 3, type: "text", followup: true,
+    q: "What made you switch?",
+    hint: "What wasn't working with the last company?",
+    when: a => a.before === "Another company" },
+  { id: "annoying", num: 4, type: "text",
+    q: "What was the most annoying part of dealing with the lawn before David?" },
+  { id: "hesitation", num: 5, type: "multi", exclusive: "Nope!",
+    q: "Was there anything that almost stopped you from booking?",
+    hint: "Pick as many as you like.",
+    options: ["Price", "Trusting someone at my house", "Didn't think I needed it", "Worried they wouldn't show up consistently", "Nope!", "Other"] },
+  { id: "went_anyway", num: 5, type: "text", followup: true,
+    q: "What made you go for it anyway?",
+    when: a => (a.hesitation || []).length > 0 && !(a.hesitation || []).includes("Nope!") },
+  { id: "miss_most", num: 6, type: "text",
+    q: "What would you miss most if David stopped coming?" },
+  { id: "tell_neighbor", num: 7, type: "text",
+    q: "If a neighbor asked about David, what would you tell them?" },
+  { id: "words", num: 8, type: "words",
+    q: "Describe David's service in 3 words.",
+    hint: "Whatever pops into your head first." },
+  { id: "yard_wish", num: 9, type: "text",
+    q: "Anything else in your yard you wish someone would just take care of?" },
+  { id: "message", num: 10, type: "text", optional: true, last: true,
+    q: "Last one! Anything you'd want to tell David?" },
+  { id: "thanks", type: "thanks" }
+];
+const TOTAL = 10;
+
+const $ = id => document.getElementById(id);
+const stage = $("stage");
+const bar = $("bar");
+const progress = $("progress");
+
+let answers = {};
+let index = 0;
+let submitted = false;
+let sending = false;
+
+function load() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORE_KEY) || "null");
+    if (saved) { answers = saved.answers || {}; index = saved.index || 0; submitted = !!saved.submitted; }
+    if (localStorage.getItem(STORE_KEY + "-big") === "1") setBig(true);
+  } catch (e) {}
+}
+function save() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify({ answers, index, submitted })); } catch (e) {}
+}
+
+function setBig(on) {
+  document.documentElement.classList.toggle("big", on);
+  $("textsize").setAttribute("aria-pressed", String(on));
+  $("textsizelabel").textContent = on ? "Click for normal text" : "Click for bigger text";
+  try { localStorage.setItem(STORE_KEY + "-big", on ? "1" : "0"); } catch (e) {}
+}
+$("textsize").addEventListener("click", () => setBig(!document.documentElement.classList.contains("big")));
+
+const visible = s => !s.when || s.when(answers);
+function nextIndex(from) { for (let i = from + 1; i < SCREENS.length; i++) if (visible(SCREENS[i])) return i; return from; }
+function prevIndex(from) { for (let i = from - 1; i >= 0; i--) if (visible(SCREENS[i])) return i; return 0; }
+
+function el(html) { const t = document.createElement("template"); t.innerHTML = html.trim(); return t.content.firstElementChild; }
+
+function questionHead(s) {
+  const tag = s.optional ? ` <span class="opt-tag">(optional)</span>` : "";
+  return `<h2 class="q" id="qh" tabindex="-1">${s.q}${tag}</h2>` + (s.hint ? `<p class="hint">${s.hint}</p>` : `<div style="height:14px"></div>`);
+}
+
+function renderChoices(s) {
+  const multi = s.type === "multi";
+  const cur = answers[s.id];
+  const isOn = v => multi ? (cur || []).includes(v) : cur === v;
+  const items = s.options.map(o => `
+    <label class="choice ${multi ? "check" : "radio"}">
+      <input type="${multi ? "checkbox" : "radio"}" name="${s.id}" value="${o.replace(/"/g, "&quot;")}" ${isOn(o) ? "checked" : ""}>
+      <span class="tick" aria-hidden="true"><i class="ph-bold ph-check"></i></span>
+      <span>${o}</span>
+    </label>`).join("");
+  const node = el(`<div class="screen"><fieldset aria-labelledby="qh">${questionHead(s)}
+    <div class="choices">${items}</div></fieldset>
+    <div class="note-wrap">
+      <label class="field-label" for="note">Something we missed? Tell us here <span class="opt">(optional)</span></label>
+      <textarea id="note" maxlength="1000"></textarea>
+    </div>
+  </div>`);
+
+  // Written box under every choice question; picking "Other" jumps to it
+  const note = node.querySelector("#note");
+  note.value = answers[s.id + "_other"] || "";
+
+  node.querySelectorAll("input[name]").forEach(inp => inp.addEventListener("change", () => {
+    if (multi) {
+      let vals = [...node.querySelectorAll(`input[name="${s.id}"]:checked`)].map(i => i.value);
+      if (s.exclusive && inp.checked) {
+        vals = inp.value === s.exclusive ? [s.exclusive] : vals.filter(v => v !== s.exclusive);
+        node.querySelectorAll(`input[name="${s.id}"]`).forEach(i => { i.checked = vals.includes(i.value); });
+      }
+      answers[s.id] = vals;
+    } else {
+      answers[s.id] = inp.value;
+    }
+    if (inp.value === "Other" && inp.checked) setTimeout(() => {
+      note.focus({ preventScroll: true });
+      note.scrollIntoView({ block: "center", behavior: "smooth" });
+    }, 50);
+    save(); updateNext();
+  }));
+  note.addEventListener("input", () => { answers[s.id + "_other"] = note.value; save(); updateNext(); });
+  return node;
+}
+
+function renderText(s) {
+  const node = el(`<div class="screen">${questionHead(s)}
+    <textarea id="ta" aria-labelledby="qh" maxlength="2000" placeholder="Type your answer here"></textarea></div>`);
+  const ta = node.querySelector("#ta");
+  ta.value = answers[s.id] || "";
+  ta.addEventListener("input", () => { answers[s.id] = ta.value; save(); updateNext(); });
+  return node;
+}
+
+function renderWords(s) {
+  const names = ["word1", "word2", "word3"];
+  const labels = ["First word", "Second word", "Third word"];
+  const rows = names.map((n, i) => `
+    <div class="word-row">
+      <span class="word-num" aria-hidden="true">${i + 1}</span>
+      <label class="sr-only" for="${n}">${labels[i]}</label>
+      <input class="text-input" id="${n}" type="text" maxlength="30" autocomplete="off" autocapitalize="sentences" enterkeyhint="${i < 2 ? "next" : "done"}">
+    </div>`).join("");
+  const node = el(`<div class="screen"><fieldset aria-labelledby="qh">${questionHead(s)}<div class="words">${rows}</div></fieldset></div>`);
+  names.forEach((n, i) => {
+    const inp = node.querySelector("#" + n);
+    inp.value = answers[n] || "";
+    inp.addEventListener("input", () => { answers[n] = inp.value; save(); updateNext(); });
+    inp.addEventListener("keydown", e => {
+      if (e.key === "Enter") { e.preventDefault(); i < 2 ? node.querySelector("#" + names[i + 1]).focus() : goNext(); }
+    });
+  });
+  return node;
+}
+
+function renderIntro() {
+  const node = el(`<div class="screen intro">
+    <div class="hero-lawn" aria-hidden="true">
+      <i class="ph-fill ph-sun sun"></i>
+      <span class="big-mower"><i class="ph-fill ph-tractor"></i></span>
+    </div>
+    <h1 id="qh" tabindex="-1">Hey! It's David 👋</h1>
+    <p>Got a few quick questions for you, takes about 3 minutes. Thanks for being a customer!</p>
+    <ul class="meta">
+      <li><i class="ph-bold ph-clock" aria-hidden="true"></i>About 3 minutes</li>
+      <li><i class="ph-bold ph-plant" aria-hidden="true"></i>10 questions</li>
+      <li><i class="ph-bold ph-arrow-right" aria-hidden="true"></i>Skip any question you like</li>
+    </ul>
+  </div>`);
+  return node;
+}
+
+function renderThanks() {
+  const testMode = !ENDPOINT || ENDPOINT.startsWith("PASTE_");
+  const node = el(`<div class="screen thanks">
+    <div class="badge" aria-hidden="true"><i class="ph-bold ph-check"></i></div>
+    <h2 id="qh" tabindex="-1">That's it, thank you! 🙌</h2>
+    <p>This really helps.</p>
+    <div class="hero-lawn done" aria-hidden="true">
+      <i class="ph-fill ph-sun sun"></i>
+      <span class="big-mower"><i class="ph-fill ph-tractor"></i></span>
+    </div>
+    ${testMode ? `<p class="test-note">Test mode: the survey isn't connected to the Google Sheet yet, so this answer wasn't saved.</p>` : ""}
+  </div>`);
+  return node;
+}
+
+function clippings() {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const wrap = document.createElement("div");
+  wrap.className = "clippings";
+  wrap.setAttribute("aria-hidden", "true");
+  const colors = ["#5DAA58", "#4C984B", "#7CC36F", "#2E6B36", "#F2B33D"];
+  for (let i = 0; i < 46; i++) {
+    const c = document.createElement("span");
+    c.className = "clip";
+    c.style.setProperty("--x", Math.random() * 100 + "vw");
+    c.style.setProperty("--c", colors[i % colors.length]);
+    c.style.setProperty("--d", (1.8 + Math.random() * 1.6) + "s");
+    c.style.setProperty("--delay", (Math.random() * .6) + "s");
+    c.style.setProperty("--drift", (Math.random() * 120 - 60) + "px");
+    c.style.setProperty("--r", (Math.random() * 720 - 360) + "deg");
+    wrap.appendChild(c);
+  }
+  document.body.appendChild(wrap);
+  setTimeout(() => wrap.remove(), 4200);
+}
+
+function isEmpty(s) {
+  if (s.type === "text") return !(answers[s.id] || "").trim();
+  if (s.type === "words") return !["word1", "word2", "word3"].some(n => (answers[n] || "").trim());
+  const noNote = !(answers[s.id + "_other"] || "").trim();
+  if (s.type === "multi") return !(answers[s.id] || []).length && noNote;
+  if (s.type === "single") return !answers[s.id] && noNote;
+  return false;
+}
+
+function updateNext() {
+  const s = SCREENS[index];
+  const label = $("nextlabel");
+  const icon = $("nexticon");
+  if (sending) { label.textContent = "Sending..."; return; }
+  if (s.type === "intro") { label.textContent = "Let's go"; icon.className = "ph-bold ph-arrow-right"; return; }
+  if (s.last) { label.textContent = "Send it"; icon.className = "ph-bold ph-paper-plane-tilt"; return; }
+  icon.className = "ph-bold ph-arrow-right";
+  label.textContent = isEmpty(s) ? "Skip" : "Next";
+}
+
+function render(dir) {
+  const s = SCREENS[index];
+  let node;
+  if (s.type === "intro") node = renderIntro();
+  else if (s.type === "thanks") node = renderThanks();
+  else if (s.type === "text") node = renderText(s);
+  else if (s.type === "words") node = renderWords(s);
+  else node = renderChoices(s);
+  if (dir === "back") node.classList.add("back");
+  stage.replaceChildren(node);
+
+  const inQuestions = !!s.num;
+  progress.hidden = !inQuestions;
+  bar.hidden = s.type === "thanks";
+  $("back").hidden = s.type === "intro";
+  if (inQuestions) {
+    const p = s.followup ? (s.num - 0.5) / TOTAL : (s.num - 1) / TOTAL;
+    progress.style.setProperty("--p", Math.max(0, p).toFixed(3));
+    progress.classList.remove("moving"); void progress.offsetWidth; progress.classList.add("moving");
+    $("progressbar").setAttribute("aria-valuenow", String(s.num - 1));
+    const where = s.followup ? `Question ${s.num} of ${TOTAL}, quick follow-up` : `Question ${s.num} of ${TOTAL}`;
+    $("stepcount").innerHTML = `<span>${where}</span><span class="skip-ok">Skip any you like</span>`;
+  }
+  updateNext();
+  const h = $("qh");
+  if (h && dir) h.focus({ preventScroll: true });
+  window.scrollTo(0, 0);
+}
+
+function go(to, dir, push = true) {
+  index = to;
+  save();
+  if (push) history.pushState({ i: to }, "", "");
+  render(dir);
+}
+
+function goNext() {
+  const s = SCREENS[index];
+  if (sending) return;
+  if (s.last) { submit(); return; }
+  go(nextIndex(index), "next");
+}
+
+function goBack() {
+  if (index === 0) return;
+  history.back();
+}
+
+window.addEventListener("popstate", e => {
+  if (submitted) { history.replaceState({ i: index }, "", ""); return; }
+  const to = e.state && typeof e.state.i === "number" ? e.state.i : 0;
+  const dir = to < index ? "back" : "next";
+  go(visible(SCREENS[to]) ? to : prevIndex(to), dir, false);
+});
+
+$("next").addEventListener("click", goNext);
+$("back").addEventListener("click", goBack);
+
+function payload() {
+  const params = new URLSearchParams(location.search);
+  const val = k => (answers[k] || "").trim();
+  return {
+    submitted_at: new Date().toISOString(),
+    ref: (params.get("r") || "").slice(0, 60),
+    persona: answers.persona || "",
+    persona_other: val("persona_other"),
+    lawn_matters: val("lawn_matters"),
+    before: answers.before || "",
+    before_other: val("before_other"),
+    switch_reason: answers.before === "Another company" ? val("switch_reason") : "",
+    annoying: val("annoying"),
+    hesitation: answers.hesitation || [],
+    hesitation_other: val("hesitation_other"),
+    went_anyway: SCREENS.find(x => x.id === "went_anyway").when(answers) ? val("went_anyway") : "",
+    miss_most: val("miss_most"),
+    tell_neighbor: val("tell_neighbor"),
+    word1: val("word1"),
+    word2: val("word2"),
+    word3: val("word3"),
+    yard_wish: val("yard_wish"),
+    message: val("message"),
+    website: $("website").value
+  };
+}
+
+async function submit() {
+  sending = true;
+  $("next").disabled = true;
+  updateNext();
+  const body = JSON.stringify(payload());
+  const testMode = !ENDPOINT || ENDPOINT.startsWith("PASTE_");
+  try {
+    if (testMode) {
+      console.info("[test mode] would send:", JSON.parse(body));
+      await new Promise(r => setTimeout(r, 600));
+    } else {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 15000);
+      await fetch(ENDPOINT, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body, signal: ctrl.signal });
+      clearTimeout(timer);
+    }
+    submitted = true;
+    sending = false;
+    $("next").disabled = false;
+    index = SCREENS.length - 1;
+    save();
+    history.replaceState({ i: index }, "", "");
+    render("next");
+    clippings();
+  } catch (e) {
+    sending = false;
+    $("next").disabled = false;
+    updateNext();
+    let err = $("senderr");
+    if (!err) {
+      err = el(`<p class="error" id="senderr" role="alert"><i class="ph-bold ph-warning-circle" aria-hidden="true"></i><span>Hmm, that didn't send. Check your connection and tap "Send it" again. Your answers are saved.</span></p>`);
+      stage.querySelector(".screen").appendChild(err);
+    }
+  }
+}
+
+load();
+if (submitted) index = SCREENS.length - 1;
+if (!visible(SCREENS[index])) index = prevIndex(index);
+history.replaceState({ i: index }, "", "");
+render(null);
+</script>
+</body>
+</html>
